@@ -1,0 +1,39 @@
+plugins {
+  id 'java'
+  id 'maven'
+  id 'application'
+}
+
+repositories {
+  mavenLocal()
+  jcenter()
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+  implementation(group:'com.github.dialogos-project', name:'dialogos', version:'2.0.4-SNAPSHOT') {
+    exclude module: 'DialogOS_SphinxPlugin'
+    exclude module: 'DialogOS_MaryTTSPlugin'
+  }
+  
+  runtime group:'com.github.dialogos-project', name:'dialogos', version:'2.0.4-SNAPSHOT'
+}
+
+mainClassName = 'com.clt.dialogos.DialogOS'
+
+def version = '2.0.1'  // DO NOT EDIT - THIS IS CHANGED BY THE RELEASE SCRIPT
+def group = 'com.github.dialogos-project'
+project.version = version
+
+apply plugin: 'maven-publish' // to provide "gradlew publishToMavenLocal"
+// configuration for maven-publish plugin
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.dialogos-project'
+            artifactId = 'dialogos-alexa-plugin'
+	    version = version
+            from components.java
+        }
+    }
+}
