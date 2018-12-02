@@ -22,7 +22,6 @@ public class DialogosSpeechlet implements Speechlet {
       // notify lock object for this session to wake up graph execution
       // -> this will execute the graph until the next input node
       // -> but when and what should we return from onIntent??
-        }
     }
 
     public void onSessionEnded(SessionEndedRequest sessionEndedRequest, Session session) throws SpeechletException {
