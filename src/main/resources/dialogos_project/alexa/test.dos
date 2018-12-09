@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wizard SYSTEM "Wizard.dtd">
+
+<wizard>
+	<plugin type="alexa-plugin">
+	</plugin>
+	<plugin type="dialogos.plugin.tts">
+	</plugin>
+	<plugin type="dialogos.plugin.sphinx">
+		<att name="language" type="string" value="de_DE"/>
+	</plugin>
+	<graph directed="1" Graphic="1" Layout="points">
+		<att name="width" type="integer" value="750"/>
+		<att name="height" type="integer" value="540"/>
+		<groovyFunctions></groovyFunctions>
+		<node uid="30188512-78e7-4d67-a8d9-95ef86e44281" class="com.clt.diamant.graph.nodes.StartNode">
+			<graphics x="370" y="40" fill="#9999ff"/>
+			<att name="title" type="string" value="Start"/>
+		</node>
+		<node uid="81b6e2bf-7942-4341-8de0-f5c8eba4971e" class="com.clt.diamant.graph.nodes.EndNode">
+			<graphics x="372" y="258" fill="#9999ff"/>
+			<att name="title" type="string" value="End"/>
+		</node>
+		<node uid="8e9e15da-79a9-411a-8d68-7c4d93f68791" class="dialogos_project.alexa.AlexaInputNode">
+			<graphics x="361" y="149" fill="#c0c0c0"/>
+			<att name="title" type="string" value="Alexa Input"/>
+		</node>
+		<edge src="30188512-78e7-4d67-a8d9-95ef86e44281" tgt="8e9e15da-79a9-411a-8d68-7c4d93f68791">
+		</edge>
+		<edge src="8e9e15da-79a9-411a-8d68-7c4d93f68791" tgt="81b6e2bf-7942-4341-8de0-f5c8eba4971e">
+			<att name="condition" type="string" value="HelloWorldIntent"/>
+		</edge>
+	</graph>
+</wizard>

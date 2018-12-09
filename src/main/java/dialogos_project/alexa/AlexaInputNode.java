@@ -5,9 +5,11 @@
  */
 package dialogos_project.alexa;
 
+import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.clt.diamant.ExecutionLogger;
 import com.clt.diamant.IdMap;
 import com.clt.diamant.InputCenter;
+import com.clt.diamant.InputOutputSynchronizer;
 import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.Node;
 import com.clt.diamant.graph.nodes.AbstractInputNode.EdgeManager;
@@ -20,6 +22,9 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -31,6 +36,7 @@ import javax.swing.JTabbedPane;
 public class AlexaInputNode extends Node {
     private static final String TIMEOUT_PROPERTY = "timeout";
     private EdgeManager edgeManager = new EdgeManager(this, TIMEOUT_PROPERTY);
+    private InputOutputSynchronizer<HandlerInput,String> synchronizer = getGraph().getSynchronizer();
 
     public AlexaInputNode() {
         /* important that some value is set (must not be one of Boolean values, not null later) */
@@ -44,20 +50,38 @@ public class AlexaInputNode extends Node {
 
     @Override
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
-        AlexaPluginRuntime runtime = (AlexaPluginRuntime) getPluginRuntime(Plugin.class, wi);
-        AlexaExecutionContext context = runtime.getContext();
-
+        System.err.println("[DialogOS] execute");
+        
         try {
-            // disconnect and wait for next connection from client
-            context.disconnect();
-            context.connect();
-
-            // then read the line they sent
-            String input = context.read();
-            System.err.println("received: " + input);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            HandlerInput intent = synchronizer.receiveFromCaller();
+            System.err.println("[DialogOS] received: " + intent);
+            synchronizer.sendToCaller("hallo");
+            System.err.println("[DialogOS] sent: hallo" + intent);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
+//        
+//        
+//        System.err.println("Alexa Input: EXECUTE");
+//        
+//        AlexaPluginRuntime runtime = (AlexaPluginRuntime) getPluginRuntime(Plugin.class, wi);
+//        AlexaExecutionContext context = runtime.getContext();
+//
+//        try {
+//            // disconnect and wait for next connection from client
+//            context.disconnect();
+//            context.connect();
+//
+//            // then read the line they sent
+//            String input = context.read();
+//            System.err.println("received: " + input);
+//        } catch (IOException ex) {
+//            throw new RuntimeException(ex);
+//        }
 
         return getEdge(0).getTarget();
     }

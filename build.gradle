@@ -2,6 +2,7 @@ plugins {
   id 'java'
   id 'maven'
   id 'application'
+  id 'com.github.johnrengelman.shadow' version '4.0.3'
 }
 
 repositories {
@@ -22,11 +23,18 @@ dependencies {
   
   compile 'com.amazon.alexa:ask-sdk:2.9.2'
     
-    
-  runtime group:'com.github.dialogos-project', name:'dialogos', version:'2.0.5-SNAPSHOT'
+  runtime(group:'com.github.dialogos-project', name:'dialogos', version:'2.0.5-SNAPSHOT') {
+    exclude module: 'DialogOS_SphinxPlugin'
+    exclude module: 'DialogOS_MaryTTSPlugin'
+    exclude module: 'TTSClient'
+    exclude module: 'SpeechClient'
+    exclude module: 'RecognizerClient'
+    exclude module: 'com.clt.audio'
+  }
+  //runtime group:'com.github.dialogos-project', name:'dialogos', version:'2.0.5-SNAPSHOT'
 }
 
-mainClassName = 'com.clt.dialogos.DialogOS'
+mainClassName = 'dialogos_project.alexa.DialogosStreamHandler'
 
 def version = '2.0.1'  // DO NOT EDIT - THIS IS CHANGED BY THE RELEASE SCRIPT
 def group = 'com.github.dialogos-project'

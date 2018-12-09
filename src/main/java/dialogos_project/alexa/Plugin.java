@@ -171,7 +171,7 @@ public class Plugin implements com.clt.dialogos.plugin.Plugin {
 
             @Override
             protected PluginRuntime createRuntime(Component cmpnt) throws Exception {
-                return new AlexaPluginRuntime(12345); // TODO - read port from settings
+                return new AlexaPluginRuntime();
             }
         };
     }

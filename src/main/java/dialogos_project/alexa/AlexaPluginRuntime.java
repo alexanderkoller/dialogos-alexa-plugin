@@ -17,18 +17,18 @@ import java.util.logging.Logger;
 public class AlexaPluginRuntime implements PluginRuntime {
     private AlexaExecutionContext context = null;
 
-    public AlexaPluginRuntime(int port) throws IOException {
-        context = new AlexaExecutionContext(port);
-        context.connect();
+    public AlexaPluginRuntime() throws IOException {
+//        context = new AlexaExecutionContext(port);
+//        context.connect();
     }
 
     @Override
     public void dispose() {
-        try {
-            context.disconnect();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+//        try {
+//            context.disconnect();
+//        } catch (IOException ex) {
+//            throw new RuntimeException(ex);
+//        }
     }
 
     public AlexaExecutionContext getContext() {
