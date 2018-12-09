@@ -37,6 +37,10 @@ public class AlexaInputNode extends Node {
         this.setProperty(TIMEOUT_PROPERTY, null);
         this.setProperty("background", Boolean.FALSE);
     }
+    
+    public static String getNodeTypeName(Class<?> c) {
+        return "Alexa Input";
+    }
 
     @Override
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
@@ -88,7 +92,7 @@ public class AlexaInputNode extends Node {
         tabs.addTab("Output", outputTab);
 
         // populate Input panel
-        final EdgeConditionModel edgeModel = new EdgeConditionModel(this, properties, com.clt.diamant.Resources.getString("InputPatterns"));
+        final EdgeConditionModel edgeModel = new EdgeConditionModel(this, properties, "Intent patterns"); // TODO localize
         final PatternTable patternTable = new PatternTable(edgeModel);
         inputTab.add(patternTable);
 
