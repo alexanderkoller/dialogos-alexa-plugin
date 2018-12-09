@@ -11,12 +11,19 @@ repositories {
 }
 
 dependencies {
-  implementation(group:'com.github.dialogos-project', name:'dialogos', version:'2.0.4-SNAPSHOT') {
+  implementation(group:'com.github.dialogos-project', name:'dialogos', version:'2.0.5-SNAPSHOT') {
     exclude module: 'DialogOS_SphinxPlugin'
     exclude module: 'DialogOS_MaryTTSPlugin'
+    exclude module: 'TTSClient'
+    exclude module: 'SpeechClient'
+    exclude module: 'RecognizerClient'
+    exclude module: 'com.clt.audio'
   }
   
-  runtime group:'com.github.dialogos-project', name:'dialogos', version:'2.0.4-SNAPSHOT'
+  compile 'com.amazon.alexa:ask-sdk:2.9.2'
+    
+    
+  runtime group:'com.github.dialogos-project', name:'dialogos', version:'2.0.5-SNAPSHOT'
 }
 
 mainClassName = 'com.clt.dialogos.DialogOS'
