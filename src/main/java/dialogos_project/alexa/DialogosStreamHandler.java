@@ -53,6 +53,7 @@ public class DialogosStreamHandler extends SkillStreamHandler {
         InputOutputSynchronizer<HandlerInput, String> synchronizer = new QueueInputOutputSynchronizer<>();
 
         DialogOS.run(dialogModel, true, true, true, synchronizer);
+        
     }
 
     private static void copyData(InputStream in, OutputStream out) throws IOException {
