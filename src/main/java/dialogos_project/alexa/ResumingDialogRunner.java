@@ -13,18 +13,15 @@ import com.clt.diamant.ExecutionResult;
 import com.clt.diamant.Preferences;
 import com.clt.diamant.Resources;
 import com.clt.diamant.SingleDocument;
-import com.clt.diamant.Slot;
 import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.DialogState;
 import com.clt.diamant.graph.SuspendingNode;
 import com.clt.diamant.graph.nodes.DialogSuspendedException;
 import com.clt.gui.GUI;
-import com.clt.script.exp.Type;
-import com.clt.script.exp.values.StringValue;
 import com.clt.util.Misc;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import org.json.JSONObject;
 
 /**
  *
@@ -35,9 +32,12 @@ public class ResumingDialogRunner {
     public static void main(String[] args) throws IOException, Exception {
         File model = new File(args[0]);
 
-        String resumeWithIntent = null;
+        String inputForResume = null;
+        String suspendedState = null;
+        
         if (args.length > 1) {
-            resumeWithIntent = args[1];
+            inputForResume = args[1];
+            suspendedState = args[2];
         }
 
         // initialize preferences
@@ -54,18 +54,15 @@ public class ResumingDialogRunner {
 
         SingleDocument d = (SingleDocument) Document.load(model);
         
-        if( resumeWithIntent != null ) {
-            // simulate loading from DB
-            Slot x = new Slot("test_variable", Type.String, "undefined", true);
-            x.setId("cb8bf5a9-a428-4605-8cc2-ccd5beb5e600");
-            x.setValue(new StringValue("hallo"));
+        if( inputForResume != null ) {
+            JSONObject j = new JSONObject(suspendedState);
+            DialogState state = DialogState.fromJson(j, d.getOwnedGraph());
             
-            SuspendingNode n = (SuspendingNode) d.getOwnedGraph().findNodeById("8e9e15da-79a9-411a-8d68-7c4d93f68791");
-            n.resume(resumeWithIntent);
+            // send input value to node
+            SuspendingNode n = (SuspendingNode) d.getOwnedGraph().findNodeById(state.getSuspendedNode().getId());
+            n.resume(inputForResume);
             
-            DialogState state = new DialogState(n);
-            state.addVariable(x);
-            
+            // resume graph execution
             d.getOwnedGraph().resume(state);
         }
         
@@ -78,7 +75,7 @@ public class ResumingDialogRunner {
                 System.out.println("execution finished, result: " + result);
             } catch (DialogSuspendedException exn) {
                 System.err.println("dialog suspended!");
-                System.err.println(exn.getDialogState());
+                System.err.println(exn.getDialogState().toJson().toString());
                 System.exit(0);
             }
         }
