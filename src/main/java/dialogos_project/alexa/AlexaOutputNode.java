@@ -8,6 +8,7 @@ package dialogos_project.alexa;
 import com.clt.diamant.ExecutionLogger;
 import com.clt.diamant.IdMap;
 import com.clt.diamant.InputCenter;
+import com.clt.diamant.Slot;
 import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.Node;
 import com.clt.xml.XMLWriter;
@@ -28,8 +29,15 @@ public class AlexaOutputNode extends Node {
 
     @Override
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
-        AlexaPluginRuntime runtime = (AlexaPluginRuntime) getPluginRuntime(Plugin.class, wi);
-        runtime.getContext().write("hallo");
+        System.err.println("Alexa output node");
+        for( Slot x : getGraph().getVariables() ) {
+            System.err.println(x.toDetailedString());
+        }
+        
+        
+        
+//        AlexaPluginRuntime runtime = (AlexaPluginRuntime) getPluginRuntime(Plugin.class, wi);
+//        runtime.getContext().write("hallo");
         
         return getEdge(0).getTarget();
     }

@@ -10,6 +10,7 @@ import com.clt.diamant.IdMap;
 import com.clt.diamant.InputCenter;
 import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.Node;
+import com.clt.diamant.graph.SuspendingNode;
 import com.clt.diamant.graph.nodes.AbstractInputNode.EdgeManager;
 import com.clt.diamant.graph.nodes.AbstractInputNode.PatternTable;
 import com.clt.diamant.graph.nodes.TimeoutEdge;
@@ -28,7 +29,7 @@ import javax.swing.JTabbedPane;
  *
  * @author koller
  */
-public class AlexaInputNode extends Node {
+public class AlexaInputNode extends SuspendingNode<String> {
     private static final String TIMEOUT_PROPERTY = "timeout";
     private EdgeManager edgeManager = new EdgeManager(this, TIMEOUT_PROPERTY);
 //    private InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer = getGraph().getSynchronizer();
@@ -47,7 +48,15 @@ public class AlexaInputNode extends Node {
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
         System.err.println("[DialogOS] execute");
         
-        getGraph().suspend(this);
+        String inputValue = consumeInputValue();
+        
+        if( inputValue == null ) {
+            suspend();
+        } else {
+            System.err.println("Alexa input node received input value: " + inputValue);
+            // resume  -> choose port
+        }
+        
         
         // TODO figure out how to resume
         
