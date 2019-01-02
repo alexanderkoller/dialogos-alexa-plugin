@@ -63,7 +63,7 @@ public class ResumingDialogRunner {
             DialogState state = DialogState.fromJson(j, d.getOwnedGraph());
             
             // send input value to node
-            SuspendingNode n = (SuspendingNode) d.getOwnedGraph().findNodeById(state.getSuspendedNode().getId());
+            SuspendingNode<String> n = state.lookupNode(d.getOwnedGraph());
             n.resume(inputForResume);
             
             // resume graph execution
