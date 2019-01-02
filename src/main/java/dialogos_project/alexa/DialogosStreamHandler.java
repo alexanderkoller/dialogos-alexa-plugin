@@ -11,8 +11,8 @@ import com.amazon.ask.SkillStreamHandler;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.model.Response;
 import com.clt.dialogos.DialogOS;
-import com.clt.diamant.InputOutputSynchronizer;
-import com.clt.diamant.QueueInputOutputSynchronizer;
+//import com.clt.diamant.InputOutputSynchronizer;
+//import com.clt.diamant.QueueInputOutputSynchronizer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,11 +29,11 @@ import java.util.logging.Logger;
  * @author koller
  */
 public class DialogosStreamHandler extends SkillStreamHandler {
-    private static InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer = new QueueInputOutputSynchronizer<>();
+//    private static InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer = new QueueInputOutputSynchronizer<>();
 
     private static Skill getSkill() {
         return Skills.standard()
-                .addRequestHandlers(new DialogosIntentHandler(synchronizer))
+                .addRequestHandlers(new DialogosIntentHandler())
                 .build();
     }
 
@@ -42,7 +42,7 @@ public class DialogosStreamHandler extends SkillStreamHandler {
 
         try {
             File dialogModel = copyResourceToFile(DialogosStreamHandler.class, "test.dos");
-            DialogOS.run(dialogModel, true, true, true, synchronizer);
+            DialogOS.run(dialogModel, true, true, true);
         } catch (Exception ex) {
             Logger.getLogger(DialogosStreamHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -50,9 +50,9 @@ public class DialogosStreamHandler extends SkillStreamHandler {
 
     public static void main(String[] args) throws URISyntaxException, FileNotFoundException, IOException, Exception {
         File dialogModel = copyResourceToFile(DialogosStreamHandler.class, "test.dos");
-        InputOutputSynchronizer<HandlerInput, String> synchronizer = new QueueInputOutputSynchronizer<>();
+//        InputOutputSynchronizer<HandlerInput, String> synchronizer = new QueueInputOutputSynchronizer<>();
 
-        DialogOS.run(dialogModel, true, true, true, synchronizer);
+        DialogOS.run(dialogModel, true, true, true);
         
     }
 

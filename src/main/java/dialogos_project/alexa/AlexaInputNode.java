@@ -5,12 +5,9 @@
  */
 package dialogos_project.alexa;
 
-import com.amazon.ask.dispatcher.request.handler.HandlerInput;
-import com.amazon.ask.model.Response;
 import com.clt.diamant.ExecutionLogger;
 import com.clt.diamant.IdMap;
 import com.clt.diamant.InputCenter;
-import com.clt.diamant.InputOutputSynchronizer;
 import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.Node;
 import com.clt.diamant.graph.nodes.AbstractInputNode.EdgeManager;
@@ -23,10 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -38,7 +31,7 @@ import javax.swing.JTabbedPane;
 public class AlexaInputNode extends Node {
     private static final String TIMEOUT_PROPERTY = "timeout";
     private EdgeManager edgeManager = new EdgeManager(this, TIMEOUT_PROPERTY);
-    private InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer = getGraph().getSynchronizer();
+//    private InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer = getGraph().getSynchronizer();
 
     public AlexaInputNode() {
         /* important that some value is set (must not be one of Boolean values, not null later) */
@@ -53,26 +46,33 @@ public class AlexaInputNode extends Node {
     @Override
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
         System.err.println("[DialogOS] execute");
+        
+        getGraph().suspend(this);
+        
+        // TODO figure out how to resume
+        
 
-        try {
-            HandlerInput intent = synchronizer.receiveFromCaller();
-            System.err.println("[DialogOS] received: " + intent);
+//        try {
+//            HandlerInput intent = synchronizer.receiveFromCaller();
+//            System.err.println("[DialogOS] received: " + intent);
+//
+//            String speechText = "Hello world";
+//            Optional<Response> ret = intent.getResponseBuilder()
+//                    .withSpeech(speechText)
+//                    .withSimpleCard("HelloWorld", speechText)
+//                    .build();
+//            
+//            System.err.println("[DialogOS] built response: " + ret);
+//
+////            synchronizer.sendToCaller(ret);
+//            System.err.println("[DialogOS] sent: " + ret);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ExecutionException ex) {
+//            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
-            String speechText = "Hello world";
-            Optional<Response> ret = intent.getResponseBuilder()
-                    .withSpeech(speechText)
-                    .withSimpleCard("HelloWorld", speechText)
-                    .build();
-            
-            System.err.println("[DialogOS] built response: " + ret);
 
-            synchronizer.sendToCaller(ret);
-            System.err.println("[DialogOS] sent: " + ret);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
 //        
 //        
