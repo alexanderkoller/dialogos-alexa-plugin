@@ -19,8 +19,10 @@ import com.clt.diamant.graph.SuspendingNode;
 import com.clt.diamant.graph.nodes.DialogSuspendedException;
 import com.clt.gui.GUI;
 import com.clt.util.Misc;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import org.json.JSONObject;
 
 /**
@@ -37,7 +39,9 @@ public class ResumingDialogRunner {
         
         if (args.length > 1) {
             inputForResume = args[1];
-            suspendedState = args[2];
+            
+            BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+            suspendedState = r.readLine();
         }
 
         // initialize preferences
@@ -48,7 +52,7 @@ public class ResumingDialogRunner {
         PluginLoader.loadPlugins(appDir, e -> {
             GUI.invokeAndWait(() -> {
                 String pluginName = e.getMessage();
-                System.out.println(Resources.format("LoadingPluginX", pluginName));
+                System.err.println(Resources.format("LoadingPluginX", pluginName));
             });
         });
 
@@ -75,7 +79,7 @@ public class ResumingDialogRunner {
                 System.out.println("execution finished, result: " + result);
             } catch (DialogSuspendedException exn) {
                 System.err.println("dialog suspended!");
-                System.err.println(exn.getDialogState().toJson().toString());
+                System.out.println(exn.getDialogState().toJson().toString());
                 System.exit(0);
             }
         }
