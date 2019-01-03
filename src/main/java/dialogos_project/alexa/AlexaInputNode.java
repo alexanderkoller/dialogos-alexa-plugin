@@ -30,6 +30,7 @@ import com.clt.script.exp.Match;
 import com.clt.script.exp.Pattern;
 import com.clt.script.exp.Value;
 import com.clt.script.exp.values.StringValue;
+import com.clt.script.exp.values.StructValue;
 import com.clt.xml.XMLReader;
 import com.clt.xml.XMLWriter;
 import java.awt.BorderLayout;
@@ -40,6 +41,7 @@ import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -87,57 +89,71 @@ public class AlexaInputNode extends SuspendingNode<String, HandlerInput> {
             Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        Value intentString = null;
+        Value intentStruct = null;
         boolean testMode = getSettings().isTestMode();
 
         if (testMode) {
             // in testing mode, read string from popup window
             String s = SilentInputWindow.getString(null, "Alexa input node", prompt);
-            intentString = new StringValue(s);
+            intentStruct = makeStructFromTypedString(s, env, wi);
         } else {
             // otherwise, emit prompt to Alexa, then suspend the dialog
             // and wait for callback from Alexa
             HandlerInput inputValue = receiveAsynchronousInput(prompt);
+            
+//            AlexaPluginSettings settings = (AlexaPluginSettings) getPluginSettings(Plugin.class);
+//            runtime.setMostRecentHandlerInput(inputValue);
 
             if (inputValue.getRequest() instanceof IntentRequest) {
                 IntentRequest req = (IntentRequest) inputValue.getRequest();
                 System.err.println("Alexa input node received: " + req.getIntent());
-                intentString = makeIntentString(req.getIntent());
+                intentStruct = makeIntentStruct(req.getIntent());
             } else {
                 throw new NodeExecutionException(this, "Received an invalid request from Alexa: " + inputValue.getRequest());
             }
         }
 
-        if (intentString != null) {
+        if (intentStruct != null) {
             List<Edge> edges = new ArrayList<>(edges());
             Pattern[] patterns = createPatterns(edges);
 
             for (int i = 0; i < patterns.length; i++) {
-                Match m = patterns[i].match(intentString);
+                Match m = patterns[i].match(intentStruct);
                 if (m != null) {
                     setVariablesAccordingToMatch(m);
                     return getEdge(i).getTarget();
                 }
             }
         }
-        
-        throw new NodeExecutionException(this, "Don't know how to handle Alexa intent: " + intentString);
+
+        throw new NodeExecutionException(this, "Don't know how to handle Alexa intent: " + intentStruct);
     }
 
-    private static Value makeIntentString(Intent intent) {
-        if (intent.getSlots() == null || intent.getSlots().isEmpty()) {
-            return new StringValue(intent.getName());
-        } else {
-            List<String> orderedSlotNames = new ArrayList<>(intent.getSlots().keySet());
-            Collections.sort(orderedSlotNames);
+    private static Value makeIntentStruct(Intent intent) {
+        Map<String, Value> struct = new HashMap<>();
+        struct.put("INTENT", new StringValue(intent.getName()));
 
-            List<String> slotsOrderedByName = new ArrayList<String>();
-            for (String name : orderedSlotNames) {
-                slotsOrderedByName.add(intent.getSlots().get(name).toString());
+        if (intent.getSlots() != null) {
+            for (String slotName : intent.getSlots().keySet()) {
+                struct.put(slotName, new StringValue(intent.getSlots().get(slotName).toString()));
             }
+        }
 
-            // TODO use StructValue instead
-            return new StringValue(String.format("%s(%s)", intent.getName(), String.join(",", slotsOrderedByName)));
+        return new StructValue(struct);
+    }
+
+    private static Value makeStructFromTypedString(String s, Environment env, WozInterface wi) {
+        if (s.trim().startsWith("{")) {
+            try {
+                return Expression.parseExpression(s, env).evaluate(wi);
+            } catch (Exception ex) {
+                Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
+                return new StructValue();
+            }
+        } else {
+            Map<String, Value> struct = new HashMap<>();
+            struct.put("INTENT", new StringValue(s));
+            return new StructValue(struct);
         }
     }
 
@@ -215,7 +231,7 @@ public class AlexaInputNode extends SuspendingNode<String, HandlerInput> {
         gbc.insets = new Insets(3, 3, 3, 3);
 
         gbc.anchor = GridBagConstraints.EAST;
-        outputTab.add(new JLabel("Prompt"), gbc);
+        outputTab.add(new JLabel("Prompt:"), gbc);
 
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx++;

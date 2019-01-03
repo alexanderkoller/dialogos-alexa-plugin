@@ -39,15 +39,20 @@ public class DialogosIntentHandler implements RequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-        InputStream modelStream = getClass().getResourceAsStream(modelResourceName);
-        ResumingDialogRunner<String,HandlerInput> runner = new ResumingDialogRunner<>(modelStream);
-        Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
-
-        String strDialogState = (String) sessionAttributes.get(DIALOG_STATE_KEY);
-        JSONObject j = new JSONObject(strDialogState);
-        DialogState state = DialogState.fromJson(j);
-
         try {
+            InputStream modelStream = getClass().getResourceAsStream(modelResourceName);
+            ResumingDialogRunner<String, HandlerInput> runner = new ResumingDialogRunner<>(modelStream);
+            
+            // remember handler input
+            runner.getPluginSettings().setMostRecentHandlerInput(input);
+            
+            // decode dialog state from session
+            Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
+            String strDialogState = (String) sessionAttributes.get(DIALOG_STATE_KEY);
+            JSONObject j = new JSONObject(strDialogState);
+            DialogState state = DialogState.fromJson(j);
+
+            // resume dialog
             Pair<DialogState, String> result = runner.runUntilSuspend(state, input);
             return buildResponse(result, input);
         } catch (Exception ex) {
@@ -66,7 +71,7 @@ public class DialogosIntentHandler implements RequestHandler {
             Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
             sessionAttributes.put(DIALOG_STATE_KEY, result.getName().toJson().toString());
             input.getAttributesManager().setSessionAttributes(sessionAttributes);
-            
+
             return input.getResponseBuilder()
                     .withSpeech(result.getValue())
                     .withSimpleCard("HelloWorld", result.getValue())

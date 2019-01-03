@@ -22,12 +22,13 @@ import java.util.logging.Logger;
  * @author koller
  */
 public class LaunchRequestHandler implements RequestHandler {
+
     private final String modelResourceName;
 
     public LaunchRequestHandler(String modelResourceName) {
         this.modelResourceName = modelResourceName;
     }
-    
+
     @Override
     public boolean canHandle(HandlerInput input) {
         return input.matches(requestType(LaunchRequest.class));
@@ -35,17 +36,20 @@ public class LaunchRequestHandler implements RequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-        InputStream modelStream = getClass().getResourceAsStream(modelResourceName);
-        ResumingDialogRunner<String,HandlerInput> runner = new ResumingDialogRunner<>(modelStream);
-        
         try {
+            InputStream modelStream = getClass().getResourceAsStream(modelResourceName);
+            ResumingDialogRunner<String, HandlerInput> runner = new ResumingDialogRunner<>(modelStream);
+            
+            // remember handler input
+            runner.getPluginSettings().setMostRecentHandlerInput(input);
+
             // run dialog from start state
-            Pair<DialogState,String> result = runner.runUntilSuspend(null, null);
+            Pair<DialogState, String> result = runner.runUntilSuspend(null, null);
             return DialogosIntentHandler.buildResponse(result, input);
         } catch (Exception ex) {
             Logger.getLogger(LaunchRequestHandler.class.getName()).log(Level.SEVERE, null, ex);
             return Optional.empty();
         }
     }
-    
+
 }

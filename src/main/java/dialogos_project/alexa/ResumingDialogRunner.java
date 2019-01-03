@@ -8,7 +8,6 @@ package dialogos_project.alexa;
 import com.amazon.ask.model.services.Pair;
 import com.clt.dialog.client.StdIOConnectionChooser;
 import com.clt.dialogos.plugin.PluginLoader;
-import com.clt.diamant.Document;
 import com.clt.diamant.Executer;
 import com.clt.diamant.ExecutionResult;
 import com.clt.diamant.Preferences;
@@ -18,17 +17,11 @@ import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.DialogState;
 import com.clt.diamant.graph.SuspendingNode;
 import com.clt.diamant.graph.nodes.DialogSuspendedException;
-import com.clt.event.ProgressEvent;
-import com.clt.event.ProgressListener;
 import com.clt.gui.GUI;
 import com.clt.util.Misc;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import org.json.JSONObject;
 
 /**
  *
@@ -37,12 +30,11 @@ import org.json.JSONObject;
 public class ResumingDialogRunner<FromDialogos, ToDialogos> {
 
     private InputStream modelStream;
+    private SingleDocument d;
 
-    public ResumingDialogRunner(InputStream model) {
+    public ResumingDialogRunner(InputStream model) throws IOException {
         this.modelStream = model;
-    }
-
-    public Pair<DialogState, FromDialogos> runUntilSuspend(DialogState state, ToDialogos inputValue) throws Exception {
+        
         // initialize preferences
         Preferences.getPrefs();
 
@@ -56,7 +48,13 @@ public class ResumingDialogRunner<FromDialogos, ToDialogos> {
         });
 
         SingleDocument d = SingleDocument.loadFromStream(modelStream);
+    }
+    
+    public AlexaPluginSettings getPluginSettings() {
+        return (AlexaPluginSettings) d.getPluginSettings(Plugin.class);
+    }
 
+    public Pair<DialogState, FromDialogos> runUntilSuspend(DialogState state, ToDialogos inputValue) throws Exception {
         // resume suspended dialog
         if (state != null) {
             // send input value to node
@@ -83,12 +81,7 @@ public class ResumingDialogRunner<FromDialogos, ToDialogos> {
         return null;
     }
     
-//    private static class SilentProgressListener implements ProgressListener {
-//        @Override
-//        public void progressChanged(ProgressEvent pe) {
-//        }
-//    }
-
+    /*
     public static void main(String[] args) throws IOException, Exception {
         File model = new File(args[0]);
 
@@ -115,4 +108,5 @@ public class ResumingDialogRunner<FromDialogos, ToDialogos> {
             System.out.println(result.getName().toJson());
         }
     }
+*/
 }
