@@ -8,11 +8,6 @@ package dialogos_project.alexa;
 import com.amazon.ask.Skill;
 import com.amazon.ask.Skills;
 import com.amazon.ask.SkillStreamHandler;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,8 +16,8 @@ import java.util.logging.Logger;
  * @author koller
  */
 public class DialogosStreamHandler extends SkillStreamHandler {
-    private static final File dialogModel = copyResourceToFile(DialogosStreamHandler.class, "test.dos");
-    private static final String DIALOG_MODEL = "vars.dos";
+//    private static final File dialogModel = copyResourceToFile(DialogosStreamHandler.class, "test.dos");
+    private static final String DIALOG_MODEL = "branches.dos";
     
     public static void delay() {
         try {
@@ -42,6 +37,8 @@ public class DialogosStreamHandler extends SkillStreamHandler {
         super(getSkill());
     }
 
+    
+    /*
     private static void copyData(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[8 * 1024];
         int len;
@@ -66,5 +63,6 @@ public class DialogosStreamHandler extends SkillStreamHandler {
             return null;
         }
     }
+*/
 
 }

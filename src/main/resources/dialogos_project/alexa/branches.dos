@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wizard SYSTEM "Wizard.dtd">
+
+<wizard>
+	<plugin type="alexa-plugin">
+		<att name="testing" type="string" value="false"/>
+	</plugin>
+	<graph directed="1" Graphic="1" Layout="points">
+		<att name="width" type="integer" value="750"/>
+		<att name="height" type="integer" value="540"/>
+		<groovyFunctions></groovyFunctions>
+		<variable uid="cb8bf5a9-a428-4605-8cc2-ccd5beb5e600">
+			<name>test_variable</name>
+			<type>string</type>
+			<value>&quot;hello here is my prompt&quot;</value>
+		</variable>
+		<node uid="30188512-78e7-4d67-a8d9-95ef86e44281" class="com.clt.diamant.graph.nodes.StartNode">
+			<graphics x="370" y="40" fill="#9999ff"/>
+			<att name="title" type="string" value="Start"/>
+		</node>
+		<node uid="59006c1c-ff70-460e-a77b-46e5bc383532" class="dialogos_project.alexa.AlexaInputNode">
+			<graphics x="426" y="259" fill="#c0c0c0"/>
+			<att name="title" type="string" value="Alexa Second"/>
+			<att name="prompt" type="string" value="&quot;you made the other choice&quot;"/>
+		</node>
+		<node uid="81b6e2bf-7942-4341-8de0-f5c8eba4971e" class="com.clt.diamant.graph.nodes.EndNode">
+			<graphics x="288" y="374" fill="#9999ff"/>
+			<att name="title" type="string" value="End"/>
+		</node>
+		<node uid="8e9e15da-79a9-411a-8d68-7c4d93f68791" class="dialogos_project.alexa.AlexaInputNode">
+			<graphics x="283" y="176" fill="#c0c0c0"/>
+			<att name="title" type="string" value="Alexa Branching"/>
+			<att name="prompt" type="string" value="&quot;please make a choice&quot;"/>
+		</node>
+		<node uid="b3e2e637-afe8-4747-9b7e-dea19a8256c5" class="com.clt.diamant.graph.nodes.SetVariableNode">
+			<graphics x="441" y="108" fill="#c0c0c0"/>
+			<att name="title" type="string" value="Set variable"/>
+			<att name="assignments" type="list">
+				<att name="1" type="list">
+					<att name="var_uid" type="string" value="cb8bf5a9-a428-4605-8cc2-ccd5beb5e600"/>
+					<att name="var_value" type="string" value="&quot;hallo&quot;"/>
+				</att>
+			</att>
+			<att name="simultaneous" type="boolean" value="0"/>
+		</node>
+		<node uid="b5d696aa-1acb-4cdd-85e8-bc4d2e0f277a" class="dialogos_project.alexa.AlexaInputNode">
+			<graphics x="202" y="269" fill="#c0c0c0"/>
+			<att name="title" type="string" value="Alexa Hello"/>
+			<att name="prompt" type="string" value="&quot;hello world&quot;"/>
+		</node>
+		<edge src="30188512-78e7-4d67-a8d9-95ef86e44281" tgt="b3e2e637-afe8-4747-9b7e-dea19a8256c5">
+		</edge>
+		<edge src="59006c1c-ff70-460e-a77b-46e5bc383532" tgt="81b6e2bf-7942-4341-8de0-f5c8eba4971e">
+			<att name="condition" type="string" value="&quot;HelloWorldIntent&quot;"/>
+		</edge>
+		<edge src="8e9e15da-79a9-411a-8d68-7c4d93f68791" tgt="b5d696aa-1acb-4cdd-85e8-bc4d2e0f277a">
+			<att name="condition" type="string" value="&quot;HelloWorldIntent&quot;"/>
+		</edge>
+		<edge src="8e9e15da-79a9-411a-8d68-7c4d93f68791" tgt="59006c1c-ff70-460e-a77b-46e5bc383532">
+			<att name="condition" type="string" value="&quot;SecondIntent&quot;"/>
+		</edge>
+		<edge src="b3e2e637-afe8-4747-9b7e-dea19a8256c5" tgt="8e9e15da-79a9-411a-8d68-7c4d93f68791">
+		</edge>
+		<edge src="b5d696aa-1acb-4cdd-85e8-bc4d2e0f277a" tgt="81b6e2bf-7942-4341-8de0-f5c8eba4971e">
+			<att name="condition" type="string" value="&quot;HelloWorldIntent&quot;"/>
+		</edge>
+	</graph>
+</wizard>
