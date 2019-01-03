@@ -48,14 +48,17 @@ public class AlexaInputNode extends SuspendingNode<String> {
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
         System.err.println("[DialogOS] execute");
         
-        String inputValue = consumeInputValue();
+        String inputValue = receiveInput();
+        System.err.println("Alexa input node received input value: " + inputValue);
         
-        if( inputValue == null ) {
-            suspend();
-        } else {
-            System.err.println("Alexa input node received input value: " + inputValue);
-            // resume  -> choose port
-        }
+//        String inputValue = consumeInputValue();
+//        
+//        if( inputValue == null ) {
+//            suspend();
+//        } else {
+//            System.err.println("Alexa input node received input value: " + inputValue);
+//            // resume  -> choose port
+//        }
         
         
         // TODO figure out how to resume
