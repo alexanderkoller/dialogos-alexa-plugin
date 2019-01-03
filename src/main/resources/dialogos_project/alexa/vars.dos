@@ -11,7 +11,7 @@
 		<variable uid="cb8bf5a9-a428-4605-8cc2-ccd5beb5e600">
 			<name>test_variable</name>
 			<type>string</type>
-			<value>hello here is my prompt</value>
+			<value>&quot;hello here is my prompt&quot;</value>
 		</variable>
 		<node uid="30188512-78e7-4d67-a8d9-95ef86e44281" class="com.clt.diamant.graph.nodes.StartNode">
 			<graphics x="370" y="40" fill="#9999ff"/>
