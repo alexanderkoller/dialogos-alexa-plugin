@@ -8,6 +8,7 @@ package dialogos_project.alexa;
 import com.clt.diamant.ExecutionLogger;
 import com.clt.diamant.IdMap;
 import com.clt.diamant.InputCenter;
+import com.clt.diamant.SingleDocument;
 import com.clt.diamant.Slot;
 import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.Graph;
@@ -17,6 +18,7 @@ import com.clt.diamant.gui.NodePropertiesDialog;
 import com.clt.script.Environment;
 import com.clt.script.exp.Expression;
 import com.clt.script.exp.Value;
+import com.clt.script.exp.expressions.IDExpression;
 import com.clt.script.exp.values.StringValue;
 import com.clt.xml.XMLReader;
 import com.clt.xml.XMLWriter;
@@ -46,27 +48,29 @@ public class AlexaOutputNode extends Node {
         setProperty(PROMPT_PROPERTY, "\"\"");
         addEdge();
     }
+    
+    private String evaluatePromptExpression(String property) {
+        String promptProp = (String) getProperty(property);
+        
+        try {
+            Expression expr = parseExpression(promptProp);
+            Value promptV = expr.evaluate();
+            return  ((StringValue) promptV).getString();
+        } catch (Exception ex) {
+            Logger.getLogger(AlexaOutputNode.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
 
     @Override
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
         AlexaPluginSettings settings = (AlexaPluginSettings) getPluginSettings(Plugin.class);
-
-        // set prompt from node properties
-        Environment env = getGraph().getOwner().getEnvironment(Graph.GLOBAL);
-        String promptProp = (String) getProperty(PROMPT_PROPERTY);
-        String prompt = "";
-
-        try {
-            Value promptValue = Expression.parseExpression(promptProp, env).evaluate(wi);
-            prompt = ((StringValue) promptValue).getString();
-        } catch (Exception ex) {
-            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String prompt = evaluatePromptExpression(PROMPT_PROPERTY);
         
         if( settings.isTestMode() ) {
             JOptionPane.showMessageDialog(null, prompt, "Alexa output node", JOptionPane.PLAIN_MESSAGE);
         } else if (settings.getMostRecentHandlerInput() == null) {
-            throw new NodeExecutionException(this, "Cannot only Alexa output node after the first request from Alexa has been sent.");
+            throw new NodeExecutionException(this, "Cannot only execute Alexa output node after the first request from Alexa has been sent.");
         } else {
             settings.sendProgressiveResponse(prompt, settings.getMostRecentHandlerInput());
         }

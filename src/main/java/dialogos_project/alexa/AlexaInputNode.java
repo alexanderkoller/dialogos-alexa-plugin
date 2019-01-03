@@ -9,6 +9,7 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.model.Intent;
 import com.amazon.ask.model.IntentRequest;
 import com.clt.diamant.ExecutionLogger;
+import com.clt.diamant.ExecutionStoppedException;
 import com.clt.diamant.IdMap;
 import com.clt.diamant.InputCenter;
 import com.clt.diamant.WozInterface;
@@ -77,25 +78,19 @@ public class AlexaInputNode extends SuspendingNode<String, HandlerInput> {
 
     @Override
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
-        // set prompt from node properties
-        Environment env = getGraph().getOwner().getEnvironment(Graph.GLOBAL);
-        String promptProp = (String) getProperty(PROMPT_PROPERTY);
-        String prompt = "";
-
-        try {
-            Value promptValue = Expression.parseExpression(promptProp, env).evaluate(wi);
-            prompt = ((StringValue) promptValue).getString();
-        } catch (Exception ex) {
-            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        String prompt = evaluatePromptExpression(PROMPT_PROPERTY);
         Value intentStruct = null;
         boolean testMode = getSettings().isTestMode();
 
         if (testMode) {
             // in testing mode, read string from popup window
             String s = SilentInputWindow.getString(null, "Alexa input node", prompt);
-            intentStruct = makeStructFromTypedString(s, env, wi);
+            
+            if( s == null ) {
+                throw new ExecutionStoppedException(); // user wants to abort dialog
+            }
+            
+            intentStruct = makeStructFromTypedString(s);
         } else {
             // otherwise, emit prompt to Alexa, then suspend the dialog
             // and wait for callback from Alexa
@@ -142,10 +137,10 @@ public class AlexaInputNode extends SuspendingNode<String, HandlerInput> {
         return new StructValue(struct);
     }
 
-    private static Value makeStructFromTypedString(String s, Environment env, WozInterface wi) {
+    private Value makeStructFromTypedString(String s) {
         if (s.trim().startsWith("{")) {
             try {
-                return Expression.parseExpression(s, env).evaluate(wi);
+                return parseExpression(s).evaluate();
             } catch (Exception ex) {
                 Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
                 return new StructValue();
@@ -261,6 +256,20 @@ public class AlexaInputNode extends SuspendingNode<String, HandlerInput> {
     @Override
     public void writeVoiceXML(XMLWriter writer, IdMap idmap) throws IOException {
 
+    }
+
+    
+    private String evaluatePromptExpression(String property) {
+        String promptProp = (String) getProperty(property);
+        
+        try {
+            Expression expr = parseExpression(promptProp);
+            Value promptV = expr.evaluate();
+            return  ((StringValue) promptV).getString();
+        } catch (Exception ex) {
+            Logger.getLogger(AlexaOutputNode.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }
