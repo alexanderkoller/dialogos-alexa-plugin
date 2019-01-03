@@ -171,7 +171,11 @@ public class Plugin implements com.clt.dialogos.plugin.Plugin {
 
             @Override
             protected PluginRuntime createRuntime(Component cmpnt) throws Exception {
-                return new AlexaPluginRuntime();
+                return new PluginRuntime() {
+                    @Override
+                    public void dispose() {
+                    }
+                };
             }
         };
     }

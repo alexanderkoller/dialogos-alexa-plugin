@@ -7,38 +7,73 @@ package dialogos_project.alexa;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
+import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.Response;
+import com.amazon.ask.model.services.Pair;
+import com.amazon.ask.request.Predicates;
+import com.clt.diamant.graph.DialogState;
+import java.io.File;
+import java.io.InputStream;
+import java.util.Map;
 //import com.clt.diamant.InputOutputSynchronizer;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONObject;
 
 /**
  *
  * @author koller
  */
 public class DialogosIntentHandler implements RequestHandler {
-//    private InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer;
-//
-//    public DialogosIntentHandler(InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer) {
-//        this.synchronizer = synchronizer;
-//    }
+
+    static final String DIALOG_STATE_KEY = "dialog_state";
+    private final String modelResourceName;
+
+    public DialogosIntentHandler(String modelResourceName) {
+        this.modelResourceName = modelResourceName;
+    }
 
     @Override
     public boolean canHandle(HandlerInput input) {
-        return true; // for now
-//        return input.matches(Predicates.intentName("HelloWorldIntent"));
+        return input.matches(Predicates.requestType(IntentRequest.class));
     }
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-//        try {
-//            synchronizer.sendToDialogos(input);
-//            return synchronizer.receiveFromDialogos();
-//        } catch (Exception ex) {
-//            Logger.getLogger(DialogosIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
-//            return Optional.empty();
-//        }
-        return Optional.empty();
+        InputStream modelStream = getClass().getResourceAsStream(modelResourceName);
+        ResumingDialogRunner<String,HandlerInput> runner = new ResumingDialogRunner<>(modelStream);
+        Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
+
+        String strDialogState = (String) sessionAttributes.get(DIALOG_STATE_KEY);
+        JSONObject j = new JSONObject(strDialogState);
+        DialogState state = DialogState.fromJson(j);
+
+        try {
+            Pair<DialogState, String> result = runner.runUntilSuspend(state, input);
+            return buildResponse(result, input);
+        } catch (Exception ex) {
+            Logger.getLogger(DialogosIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
+            return Optional.empty();
+        }
+    }
+
+    static Optional<Response> buildResponse(Pair<DialogState, String> result, HandlerInput input) {
+        if (result == null) {
+            // dialog terminated successfully
+            return input.getResponseBuilder()
+                    .withShouldEndSession(true)
+                    .build();
+        } else {
+            Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
+            sessionAttributes.put(DIALOG_STATE_KEY, result.getName().toJson().toString());
+            input.getAttributesManager().setSessionAttributes(sessionAttributes);
+            
+            return input.getResponseBuilder()
+                    .withSpeech(result.getValue())
+                    .withSimpleCard("HelloWorld", result.getValue())
+                    .withShouldEndSession(false)
+                    .build();
+        }
     }
 }

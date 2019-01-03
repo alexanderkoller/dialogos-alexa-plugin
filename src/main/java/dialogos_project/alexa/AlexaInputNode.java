@@ -5,9 +5,12 @@
  */
 package dialogos_project.alexa;
 
+import com.amazon.ask.dispatcher.request.handler.HandlerInput;
+import com.amazon.ask.model.IntentRequest;
 import com.clt.diamant.ExecutionLogger;
 import com.clt.diamant.IdMap;
 import com.clt.diamant.InputCenter;
+import com.clt.diamant.Slot;
 import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.Node;
 import com.clt.diamant.graph.SuspendingNode;
@@ -16,6 +19,8 @@ import com.clt.diamant.graph.nodes.AbstractInputNode.PatternTable;
 import com.clt.diamant.graph.nodes.TimeoutEdge;
 import com.clt.diamant.graph.ui.EdgeConditionModel;
 import com.clt.gui.GUI;
+import com.clt.script.exp.Value;
+import com.clt.script.exp.values.StringValue;
 import com.clt.xml.XMLWriter;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -29,10 +34,9 @@ import javax.swing.JTabbedPane;
  *
  * @author koller
  */
-public class AlexaInputNode extends SuspendingNode<String,String> {
+public class AlexaInputNode extends SuspendingNode<String,HandlerInput> {
     private static final String TIMEOUT_PROPERTY = "timeout";
     private EdgeManager edgeManager = new EdgeManager(this, TIMEOUT_PROPERTY);
-//    private InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer = getGraph().getSynchronizer();
 
     public AlexaInputNode() {
         /* important that some value is set (must not be one of Boolean values, not null later) */
@@ -46,64 +50,18 @@ public class AlexaInputNode extends SuspendingNode<String,String> {
 
     @Override
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
-        System.err.println("[DialogOS] execute");
+        Value variableValue = getGraph().getSlotValue("test_variable");
+        String prompt = ((StringValue) variableValue).getString();
         
-        String inputValue = receiveAsynchronousInput("hello here is my prompt");
-        System.err.println("Alexa input node received input value: " + inputValue);
+        HandlerInput inputValue = receiveAsynchronousInput(prompt);
         
-//        String inputValue = consumeInputValue();
-//        
-//        if( inputValue == null ) {
-//            suspend();
-//        } else {
-//            System.err.println("Alexa input node received input value: " + inputValue);
-//            // resume  -> choose port
-//        }
+        if( inputValue.getRequest() instanceof IntentRequest ) {
+            IntentRequest req = (IntentRequest) inputValue.getRequest();
+            System.err.println("Alexa input node received: " + req.getIntent());
+            
+            getGraph().setSlotValue("test_variable", new StringValue("previous intent: " + req.getIntent().getName()));
+        }
         
-        
-        // TODO figure out how to resume
-        
-
-//        try {
-//            HandlerInput intent = synchronizer.receiveFromCaller();
-//            System.err.println("[DialogOS] received: " + intent);
-//
-//            String speechText = "Hello world";
-//            Optional<Response> ret = intent.getResponseBuilder()
-//                    .withSpeech(speechText)
-//                    .withSimpleCard("HelloWorld", speechText)
-//                    .build();
-//            
-//            System.err.println("[DialogOS] built response: " + ret);
-//
-////            synchronizer.sendToCaller(ret);
-//            System.err.println("[DialogOS] sent: " + ret);
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (ExecutionException ex) {
-//            Logger.getLogger(AlexaInputNode.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
-
-
-//        
-//        
-//        System.err.println("Alexa Input: EXECUTE");
-//        
-//        AlexaPluginRuntime runtime = (AlexaPluginRuntime) getPluginRuntime(Plugin.class, wi);
-//        AlexaExecutionContext context = runtime.getContext();
-//
-//        try {
-//            // disconnect and wait for next connection from client
-//            context.disconnect();
-//            context.connect();
-//
-//            // then read the line they sent
-//            String input = context.read();
-//            System.err.println("received: " + input);
-//        } catch (IOException ex) {
-//            throw new RuntimeException(ex);
-//        }
         return getEdge(0).getTarget();
     }
 
