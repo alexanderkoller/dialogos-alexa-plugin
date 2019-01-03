@@ -29,7 +29,7 @@ import javax.swing.JTabbedPane;
  *
  * @author koller
  */
-public class AlexaInputNode extends SuspendingNode<String> {
+public class AlexaInputNode extends SuspendingNode<String,String> {
     private static final String TIMEOUT_PROPERTY = "timeout";
     private EdgeManager edgeManager = new EdgeManager(this, TIMEOUT_PROPERTY);
 //    private InputOutputSynchronizer<HandlerInput, Optional<Response>> synchronizer = getGraph().getSynchronizer();
@@ -48,7 +48,7 @@ public class AlexaInputNode extends SuspendingNode<String> {
     public Node execute(WozInterface wi, InputCenter ic, ExecutionLogger el) {
         System.err.println("[DialogOS] execute");
         
-        String inputValue = receiveInput();
+        String inputValue = receiveAsynchronousInput("hello here is my prompt");
         System.err.println("Alexa input node received input value: " + inputValue);
         
 //        String inputValue = consumeInputValue();

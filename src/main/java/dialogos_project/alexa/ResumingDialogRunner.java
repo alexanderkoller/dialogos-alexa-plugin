@@ -63,7 +63,7 @@ public class ResumingDialogRunner {
             DialogState state = DialogState.fromJson(j, d.getOwnedGraph());
             
             // send input value to node
-            SuspendingNode<String> n = state.lookupNode(d.getOwnedGraph());
+            SuspendingNode<String,String> n = state.lookupNode(d.getOwnedGraph());
             n.resume(inputForResume);
             
             // resume graph execution
@@ -78,7 +78,7 @@ public class ResumingDialogRunner {
                 ExecutionResult result = d.run(null, executer);
                 System.out.println("execution finished, result: " + result);
             } catch (DialogSuspendedException exn) {
-                System.err.println("dialog suspended!");
+                System.err.println("Dialog suspended with prompt: " + exn.getPrompt());
                 System.out.println(exn.getDialogState().toJson().toString());
                 System.exit(0);
             }
