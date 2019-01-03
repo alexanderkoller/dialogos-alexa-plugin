@@ -17,7 +17,7 @@
 		</variable>
 		<node uid="18430bb8-bee7-4af6-826f-885ef12da927" class="dialogos_project.alexa.AlexaOutputNode">
 			<graphics x="477" y="293" fill="#c0c0c0"/>
-			<att name="title" type="string" value="AlexaOutput"/>
+			<att name="title" type="string" value="Output food"/>
 			<att name="prompt" type="string" value="&quot;You ordered &quot; + dish"/>
 		</node>
 		<node uid="30188512-78e7-4d67-a8d9-95ef86e44281" class="com.clt.diamant.graph.nodes.StartNode">
@@ -26,7 +26,7 @@
 		</node>
 		<node uid="7e241112-a248-450b-b632-88b8ed388bcb" class="dialogos_project.alexa.AlexaOutputNode">
 			<graphics x="172" y="270" fill="#c0c0c0"/>
-			<att name="title" type="string" value="AlexaOutput"/>
+			<att name="title" type="string" value="Output hello"/>
 			<att name="prompt" type="string" value="&quot;Hello world.&quot;"/>
 		</node>
 		<node uid="81b6e2bf-7942-4341-8de0-f5c8eba4971e" class="com.clt.diamant.graph.nodes.EndNode">

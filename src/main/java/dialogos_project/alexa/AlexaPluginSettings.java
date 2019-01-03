@@ -102,6 +102,9 @@ public class AlexaPluginSettings extends PluginSettings {
      * @param input
      */
     public void sendProgressiveResponse(String message, HandlerInput input) {
+        System.err.println("progressive response: " + message);
+        System.err.println("handler input: " + input);
+        
         RequestEnvelope renv = input.getRequestEnvelope();
         DirectiveServiceClient directiveServiceClient = input.getServiceClientFactory().getDirectiveService();
         String requestId = renv.getRequest().getRequestId();
@@ -109,6 +112,9 @@ public class AlexaPluginSettings extends PluginSettings {
         Header hdr = Header.builder().withRequestId(requestId).build();
         Directive directive = SpeakDirective.builder().withSpeech(message).build();
         SendDirectiveRequest speakRequest = SendDirectiveRequest.builder().withHeader(hdr).withDirective(directive).build();
+        
+        System.err.println("directive: " + speakRequest);
+        System.err.println("client: " + directiveServiceClient);
         directiveServiceClient.enqueue(speakRequest);
     }
 

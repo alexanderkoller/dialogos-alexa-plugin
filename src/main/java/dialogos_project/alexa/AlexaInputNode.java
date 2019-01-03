@@ -8,6 +8,7 @@ package dialogos_project.alexa;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.model.Intent;
 import com.amazon.ask.model.IntentRequest;
+import com.amazon.ask.model.Slot;
 import com.clt.diamant.ExecutionLogger;
 import com.clt.diamant.ExecutionStoppedException;
 import com.clt.diamant.IdMap;
@@ -25,7 +26,6 @@ import com.clt.diamant.graph.ui.EdgeConditionModel;
 import com.clt.diamant.gui.NodePropertiesDialog;
 import com.clt.diamant.gui.SilentInputWindow;
 import com.clt.gui.GUI;
-import com.clt.script.Environment;
 import com.clt.script.exp.Expression;
 import com.clt.script.exp.Match;
 import com.clt.script.exp.Pattern;
@@ -41,7 +41,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,20 +84,19 @@ public class AlexaInputNode extends SuspendingNode<String, HandlerInput> {
         if (testMode) {
             // in testing mode, read string from popup window
             String s = SilentInputWindow.getString(null, "Alexa input node", prompt);
-            
-            if( s == null ) {
+
+            if (s == null) {
                 throw new ExecutionStoppedException(); // user wants to abort dialog
             }
-            
+
             intentStruct = makeStructFromTypedString(s);
         } else {
             // otherwise, emit prompt to Alexa, then suspend the dialog
             // and wait for callback from Alexa
             HandlerInput inputValue = receiveAsynchronousInput(prompt);
-            
+
 //            AlexaPluginSettings settings = (AlexaPluginSettings) getPluginSettings(Plugin.class);
 //            runtime.setMostRecentHandlerInput(inputValue);
-
             if (inputValue.getRequest() instanceof IntentRequest) {
                 IntentRequest req = (IntentRequest) inputValue.getRequest();
                 System.err.println("Alexa input node received: " + req.getIntent());
@@ -130,7 +128,11 @@ public class AlexaInputNode extends SuspendingNode<String, HandlerInput> {
 
         if (intent.getSlots() != null) {
             for (String slotName : intent.getSlots().keySet()) {
-                struct.put(slotName, new StringValue(intent.getSlots().get(slotName).toString()));
+                Slot slot = intent.getSlots().get(slotName);
+
+                if (slot.getValue() != null) {
+                    struct.put(slotName, new StringValue(slot.getValue()));
+                }
             }
         }
 
@@ -258,14 +260,13 @@ public class AlexaInputNode extends SuspendingNode<String, HandlerInput> {
 
     }
 
-    
     private String evaluatePromptExpression(String property) {
         String promptProp = (String) getProperty(property);
-        
+
         try {
             Expression expr = parseExpression(promptProp);
             Value promptV = expr.evaluate();
-            return  ((StringValue) promptV).getString();
+            return ((StringValue) promptV).getString();
         } catch (Exception ex) {
             Logger.getLogger(AlexaOutputNode.class.getName()).log(Level.SEVERE, null, ex);
             return null;
