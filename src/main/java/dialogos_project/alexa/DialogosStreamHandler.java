@@ -8,7 +8,6 @@ package dialogos_project.alexa;
 import com.amazon.ask.Skill;
 import com.amazon.ask.Skills;
 import com.amazon.ask.SkillStreamHandler;
-import com.clt.diamant.SingleDocument;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class DialogosStreamHandler extends SkillStreamHandler {
     private static final File dialogModel = copyResourceToFile(DialogosStreamHandler.class, "test.dos");
-    private static final String DIALOG_MODEL = "test.dos";
+    private static final String DIALOG_MODEL = "vars.dos";
     
     public static void delay() {
         try {
