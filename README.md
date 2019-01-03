@@ -6,7 +6,7 @@ The plugin defines two new node types: Alexa input nodes and Alexa output nodes.
 
 ## Intents
 
-Alexa intents are represented as DialogOS [structs](https://github.com/dialogos-project/dialogos/wiki/Expressions). The struct for an intent contains the intent name under the key `INTENT`; it also has an entry for each slot with a non-null value, with the slot name as key and the slot value as value. Here is an example of a struct that encodes an intent:
+Alexa intents are represented as DialogOS [structs](https://github.com/dialogos-project/dialogos/wiki/Expressions). The struct for an intent contains the intent name under the key `INTENT`; it also has an entry for each slot with a non-null value, with the slot name as key and the slot value as value. Here is an example of a struct that encodes an intent; observe that `pizza` is the literal word the user said for the `food` slot, converted to lowercase.
 
 ```
 {INTENT="FoodOrderIntent", food="pizza"}
@@ -18,7 +18,7 @@ In an Alexa input node, you can pattern-match against the intent that was sent t
 {INTENT="FoodOrderIntent"}
 ```
 
-You can check whether the `FoodOrderIntent` is for a pizza and then store the quantity in a variable `var`; observe that `"pizza"` is the literal word the user said for the `food` slot, converted to lowercase.
+You can check whether the `FoodOrderIntent` is for a pizza and then store the quantity in a variable `var`.
 
 ```
 {INTENT="FoodOrderIntent", food="pizza", quantity=var}
