@@ -62,7 +62,10 @@ publishing {
 
 
 shadowJar {
-    manifest {
+
+//   exclude 'com/amazon/ask/model/services/**'
+
+   manifest {
 	attributes 'Main-Class': mainClassName
     }
 }

@@ -47,10 +47,13 @@ public class ResumingDialogRunner<FromDialogos, ToDialogos> {
             });
         });
 
-        SingleDocument d = SingleDocument.loadFromStream(modelStream);
+        this.d = SingleDocument.loadFromStream(modelStream);
     }
     
     public AlexaPluginSettings getPluginSettings() {
+        if( d == null ) { System.err.println("gps doc is null"); }
+        if( d.getPluginSettings(Plugin.class) == null ) { System.err.println("gps plugin is null"); }
+        
         return (AlexaPluginSettings) d.getPluginSettings(Plugin.class);
     }
 
