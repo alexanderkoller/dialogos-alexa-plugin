@@ -62,9 +62,10 @@ publishing {
 
 
 shadowJar {
-
-//   exclude 'com/amazon/ask/model/services/**'
-
+   minimize {
+      exclude(dependency('commons-logging:.*:.*'))
+   }
+   
    manifest {
 	attributes 'Main-Class': mainClassName
     }
