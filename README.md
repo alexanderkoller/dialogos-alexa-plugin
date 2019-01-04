@@ -27,9 +27,16 @@ You can check whether the `FoodOrderIntent` is for a pizza and then store the qu
 Intents are processed from top to bottom. For robustness, you might want to add a catch-all pattern `_` at the bottom of each input node.
 
 
+## Deploying to Alexa
+
+You can generate a Jar file that is suitable for deployment as an Alexa skill by going to Dialog -> Amazon Alexa plugin and clicking on the "Generate" button next to "Save dialog as Alexa skill". After you choose a filename under which the Jar file will be saved, DialogOS will bundle all the necessary files together.
+
+You will then have to upload your skill to Alexa. Proceed as explained in [Amazon's documentation](https://alexa-skills-kit-sdk-for-java.readthedocs.io/en/latest/Developing-Your-First-Skill.html). You can skip most of the document - DialogOS took care of all the programming details for you -, and simply follow the instructions under [Uploading your skill to AWS Lambda](https://alexa-skills-kit-sdk-for-java.readthedocs.io/en/latest/Developing-Your-First-Skill.html#uploading-your-skill-to-aws-lambda) and [Configuring and testing your skill](https://alexa-skills-kit-sdk-for-java.readthedocs.io/en/latest/Developing-Your-First-Skill.html#configuring-and-testing-your-skill). Note in particular that you need to define intents for your Alexa skill to match the intents your dialog expects from Alexa.
+
+To test your skill, open it in your Alexa Developer Console and go to the "Test" tab. You can then either speak or type utterances.
 
 
-## Testing
+## Offline testing
 
 The global plugin settings for the Alexa plugin have a checkbox labeled "Testing". By ticking this checkbox, Alexa input and output nodes will not attempt to communicate with Alexa. Instead, when you execute an input node, a window will be displayed in which you can type the intent by hand.
 

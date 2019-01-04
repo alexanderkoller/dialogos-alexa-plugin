@@ -14,7 +14,7 @@ import com.amazon.ask.SkillStreamHandler;
  * @author koller
  */
 public class DialogosStreamHandler extends SkillStreamHandler {
-    private static final String DIALOG_MODEL = "branches.dos";
+    private static final String DIALOG_MODEL = "/model.dos";
     
     private static Skill getSkill() {
         return Skills.standard()

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import javax.swing.Icon;
 
 public class Plugin implements com.clt.dialogos.plugin.Plugin {
-    
+
     @Override
     public void initialize() {
         Node.registerNodeTypes(getId(), Arrays.asList(new Class<?>[]{
@@ -39,4 +39,6 @@ public class Plugin implements com.clt.dialogos.plugin.Plugin {
     public PluginSettings createDefaultSettings() {
         return new AlexaPluginSettings();
     }
+
+    
 }

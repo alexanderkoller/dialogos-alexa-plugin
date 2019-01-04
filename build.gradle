@@ -38,9 +38,8 @@ dependencies {
   }
 }
 
-//mainClassName = 'dialogos_project.alexa.DialogosStreamHandler'
-//mainClassName = 'dialogos_project.alexa.ResumingDialogRunner'
 mainClassName = 'com.clt.dialogos.DialogOS'
+//mainClassName = 'dialogos_project.alexa.Plugin'
 
 def version = '2.0.1'  // DO NOT EDIT - THIS IS CHANGED BY THE RELEASE SCRIPT
 def group = 'com.github.dialogos-project'
