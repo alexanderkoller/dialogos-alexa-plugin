@@ -44,7 +44,5 @@ If the intent has no slots, you can also simply type the intent name (`FoodOrder
 ## Known limitations
 
 * Alexa output nodes are implemented in terms of [progressive responses](https://developer.amazon.com/de/docs/custom-skills/send-the-user-a-progressive-response.html). Due to a limitation in the Alexa API, only five (?) progressive responses can be sent for the same request. This means that you can execute at most five Alexa output nodes before you execute an Alexa input node again.
-
-
-
+* Dialogs that use Groovy variables are generally supported; in particular, you can use any primitive or builtin type and your own classes. However, Groovy variables that contain values of generic types may not be deserialized correctly. For instance, a `List<Integer>` (say `[1,2,3]`) will be converted into a `List<Double>` (in the example, `[1.0, 2.0, 3.0]`). This is because the variables are serialized into Json, and Json does not distinguish between int and double types. If you need such variables in an Alexa dialog, have a look at how to deal with [generic types](https://github.com/google/gson/blob/master/UserGuide.md#collections-examples) in Gson.
 
