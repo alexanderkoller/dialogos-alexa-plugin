@@ -49,6 +49,11 @@ public class AlexaOutputNode extends Node {
         addEdge();
     }
     
+    public static String getNodeTypeName(Class<?> c) {
+        return "Alexa Output";
+    }
+
+    
     private String evaluatePromptExpression(String property) {
         String promptProp = (String) getProperty(property);
         

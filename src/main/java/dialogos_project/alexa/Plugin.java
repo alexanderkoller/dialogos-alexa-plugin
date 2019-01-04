@@ -10,8 +10,8 @@ public class Plugin implements com.clt.dialogos.plugin.Plugin {
     @Override
     public void initialize() {
         Node.registerNodeTypes(getId(), Arrays.asList(new Class<?>[]{
-            AlexaOutputNode.class,
-            AlexaInputNode.class
+            AlexaInputNode.class, 
+            AlexaOutputNode.class
         }));
     }
 
