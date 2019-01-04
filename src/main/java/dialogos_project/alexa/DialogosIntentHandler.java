@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONObject;
 
 /**
  *
@@ -49,8 +48,7 @@ public class DialogosIntentHandler implements RequestHandler {
             // decode dialog state from session
             Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
             String strDialogState = (String) sessionAttributes.get(DIALOG_STATE_KEY);
-            JSONObject j = new JSONObject(strDialogState);
-            DialogState state = DialogState.fromJson(j);
+            DialogState state = DialogState.fromJson(strDialogState);
 
             // resume dialog
             Pair<DialogState, String> result = runner.runUntilSuspend(state, input);
@@ -69,7 +67,7 @@ public class DialogosIntentHandler implements RequestHandler {
                     .build();
         } else {
             Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
-            sessionAttributes.put(DIALOG_STATE_KEY, result.getName().toJson().toString());
+            sessionAttributes.put(DIALOG_STATE_KEY, result.getName().toJson());
             input.getAttributesManager().setSessionAttributes(sessionAttributes);
 
             return input.getResponseBuilder()

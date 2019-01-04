@@ -16,7 +16,7 @@ import com.clt.diamant.SingleDocument;
 import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.DialogState;
 import com.clt.diamant.graph.SuspendingNode;
-import com.clt.diamant.graph.nodes.DialogSuspendedException;
+import com.clt.diamant.graph.DialogSuspendedException;
 import com.clt.gui.GUI;
 import com.clt.util.Misc;
 import java.io.File;
@@ -51,9 +51,6 @@ public class ResumingDialogRunner<FromDialogos, ToDialogos> {
     }
     
     public AlexaPluginSettings getPluginSettings() {
-        if( d == null ) { System.err.println("gps doc is null"); }
-        if( d.getPluginSettings(Plugin.class) == null ) { System.err.println("gps plugin is null"); }
-        
         return (AlexaPluginSettings) d.getPluginSettings(Plugin.class);
     }
 
