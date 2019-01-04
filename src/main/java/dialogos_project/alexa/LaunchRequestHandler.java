@@ -9,9 +9,9 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.LaunchRequest;
 import com.amazon.ask.model.Response;
-import com.amazon.ask.model.services.Pair;
 import static com.amazon.ask.request.Predicates.requestType;
-import com.clt.diamant.graph.DialogState;
+import com.clt.diamant.suspend.ResumingDialogRunner;
+import com.clt.diamant.suspend.SuspendedExecutionResult;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -41,10 +41,11 @@ public class LaunchRequestHandler implements RequestHandler {
             ResumingDialogRunner<String, HandlerInput> runner = new ResumingDialogRunner<>(modelStream);
             
             // remember handler input
-            runner.getPluginSettings().setMostRecentHandlerInput(input);
+            AlexaPluginSettings pluginSettings = (AlexaPluginSettings) runner.getDocument().getPluginSettings(Plugin.class);
+            pluginSettings.setMostRecentHandlerInput(input);
 
             // run dialog from start state
-            Pair<DialogState, String> result = runner.runUntilSuspend(null, null);
+            SuspendedExecutionResult<String> result = runner.runUntilSuspend(null, null);
             return DialogosIntentHandler.buildResponse(result, input);
         } catch (Exception ex) {
             Logger.getLogger(LaunchRequestHandler.class.getName()).log(Level.SEVERE, null, ex);

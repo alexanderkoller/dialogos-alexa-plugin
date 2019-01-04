@@ -17,7 +17,7 @@ import com.clt.diamant.WozInterface;
 import com.clt.diamant.graph.Edge;
 import com.clt.diamant.graph.Graph;
 import com.clt.diamant.graph.Node;
-import com.clt.diamant.graph.SuspendingNode;
+import com.clt.diamant.suspend.SuspendingNode;
 import com.clt.diamant.graph.nodes.AbstractInputNode.EdgeManager;
 import com.clt.diamant.graph.nodes.AbstractInputNode.PatternTable;
 import com.clt.diamant.graph.nodes.NodeExecutionException;

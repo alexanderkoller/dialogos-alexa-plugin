@@ -9,9 +9,10 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.Response;
-import com.amazon.ask.model.services.Pair;
 import com.amazon.ask.request.Predicates;
-import com.clt.diamant.graph.DialogState;
+import com.clt.diamant.suspend.DialogState;
+import com.clt.diamant.suspend.ResumingDialogRunner;
+import com.clt.diamant.suspend.SuspendedExecutionResult;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +44,8 @@ public class DialogosIntentHandler implements RequestHandler {
             ResumingDialogRunner<String, HandlerInput> runner = new ResumingDialogRunner<>(modelStream);
             
             // remember handler input
-            runner.getPluginSettings().setMostRecentHandlerInput(input);
+            AlexaPluginSettings pluginSettings = (AlexaPluginSettings) runner.getDocument().getPluginSettings(Plugin.class);
+            pluginSettings.setMostRecentHandlerInput(input);
             
             // decode dialog state from session
             Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
@@ -51,7 +53,7 @@ public class DialogosIntentHandler implements RequestHandler {
             DialogState state = DialogState.fromJson(strDialogState);
 
             // resume dialog
-            Pair<DialogState, String> result = runner.runUntilSuspend(state, input);
+            SuspendedExecutionResult<String> result = runner.runUntilSuspend(state, input);
             return buildResponse(result, input);
         } catch (Exception ex) {
             Logger.getLogger(DialogosIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -59,7 +61,7 @@ public class DialogosIntentHandler implements RequestHandler {
         }
     }
 
-    static Optional<Response> buildResponse(Pair<DialogState, String> result, HandlerInput input) {
+    static Optional<Response> buildResponse(SuspendedExecutionResult<String> result, HandlerInput input) {
         if (result == null) {
             // dialog terminated successfully
             return input.getResponseBuilder()
@@ -67,12 +69,12 @@ public class DialogosIntentHandler implements RequestHandler {
                     .build();
         } else {
             Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
-            sessionAttributes.put(DIALOG_STATE_KEY, result.getName().toJson());
+            sessionAttributes.put(DIALOG_STATE_KEY, result.getDialogState().toJson());
             input.getAttributesManager().setSessionAttributes(sessionAttributes);
 
             return input.getResponseBuilder()
-                    .withSpeech(result.getValue())
-                    .withSimpleCard("HelloWorld", result.getValue())
+                    .withSpeech(result.getPrompt())
+                    .withSimpleCard("HelloWorld", result.getPrompt())
                     .withShouldEndSession(false)
                     .build();
         }

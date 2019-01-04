@@ -19,7 +19,7 @@ public class DialogosStreamHandler extends SkillStreamHandler {
     private static Skill getSkill() {
         return Skills.standard()
                 .addRequestHandlers(
-                        new LaunchRequestHandler(DIALOG_MODEL), 
+                        new LaunchRequestHandler(DIALOG_MODEL),
                         new DialogosIntentHandler(DIALOG_MODEL)
                 ).build();
     }
