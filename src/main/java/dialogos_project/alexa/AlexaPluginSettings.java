@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -106,24 +107,46 @@ public class AlexaPluginSettings extends PluginSettings {
     }
 
     private class GenerateButtonActionListener implements ActionListener {
+        private class MutableInteger {
+            private int value;
+
+            public MutableInteger() {
+            }
+
+            public int getValue() {
+                return value;
+            }
+
+            public void setValue(int value) {
+                this.value = value;
+            }
+        }
+        
 
         @Override
         public void actionPerformed(ActionEvent e) {
             Main main = Main.getInstance();
             final Document doc = (main == null) ? null : main.getMostRecentlyActivatedDocumentWindow().getDocument();
+            JButton source = (JButton) e.getSource();
+            Component parent = source.getTopLevelAncestor();
 
             if (doc != null) {
                 Runnable r = () -> {
                     // select filename
+                    MutableInteger fileChooserResult = new MutableInteger();
                     JFileChooser chooser = new JFileChooser();
                     FileNameExtensionFilter filter = new FileNameExtensionFilter("Jar files", "jar");
                     chooser.setFileFilter(filter);
 
-                    JButton source = (JButton) e.getSource();
-                    Component parent = source.getTopLevelAncestor();
-                    int result = chooser.showSaveDialog(parent);
+                    try {
+                        SwingUtilities.invokeAndWait(() -> {
+                            fileChooserResult.setValue(chooser.showSaveDialog(parent));
+                        });
+                    } catch (InterruptedException | InvocationTargetException ex) {
+                        Logger.getLogger(AlexaPluginSettings.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
-                    if (result == JFileChooser.APPROVE_OPTION) {
+                    if (fileChooserResult.getValue() == JFileChooser.APPROVE_OPTION) {
                         File outputFile = chooser.getSelectedFile();
                         ProgressDialog pd = new ProgressDialog(parent);
                         pd.setTitle("Generating Alexa skill");
@@ -148,7 +171,7 @@ public class AlexaPluginSettings extends PluginSettings {
                             // disabling test mode
                             File tmp = File.createTempFile("dialogos", "dos");
                             testMode.setValue(false);
-                            doc.save(parent, tmp, pe -> { });
+                            doc.save(parent, tmp, false, pe -> { });
                             jb.addEntry("model.dos", new FileInputStream(tmp));
                             tmp.delete();
 

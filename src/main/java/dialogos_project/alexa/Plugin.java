@@ -22,7 +22,7 @@ public class Plugin implements com.clt.dialogos.plugin.Plugin {
 
     @Override
     public String getName() {
-        return "Amazon Alexa plugin";
+        return "Amazon Alexa";
     }
 
     @Override
