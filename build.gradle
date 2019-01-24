@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-  implementation(group:'com.github.dialogos-project', name:'dialogos', version:'2.0.6-SNAPSHOT') {
+  implementation(group:'com.github.dialogos-project', name:'dialogos', version:'2.1.0') {
     exclude module: 'DialogOS_SphinxPlugin'
     exclude module: 'DialogOS_MaryTTSPlugin'
     exclude module: 'TTSClient'
@@ -20,15 +20,15 @@ dependencies {
     exclude module: 'RecognizerClient'
     exclude module: 'com.clt.audio'
   }
-  
+
   compile 'com.amazon.alexa:ask-sdk:2.11.1'
 
 //  implementation 'com.amazon.alexa:ask-sdk-core:2.11.1'
 //  implementation 'com.amazon.alexa:ask-sdk-model:1.11.1'
 //  implementation 'com.amazon.alexa:ask-sdk-runtime:2.11.1'
 //  implementation 'com.amazon.alexa:ask-sdk-lambda-support:2.11.1'
-    
-  runtime(group:'com.github.dialogos-project', name:'dialogos', version:'2.0.6-SNAPSHOT') {
+
+  runtime(group:'com.github.dialogos-project', name:'dialogos', version:'2.1.0') {
     exclude module: 'DialogOS_SphinxPlugin'
     exclude module: 'DialogOS_MaryTTSPlugin'
     exclude module: 'TTSClient'
@@ -41,7 +41,7 @@ dependencies {
 mainClassName = 'com.clt.dialogos.DialogOS'
 //mainClassName = 'dialogos_project.alexa.Plugin'
 
-def version = '2.0.1'  // DO NOT EDIT - THIS IS CHANGED BY THE RELEASE SCRIPT
+def version = '2.1.0'  // DO NOT EDIT - THIS IS CHANGED BY THE RELEASE SCRIPT
 def group = 'com.github.dialogos-project'
 project.version = version
 
@@ -64,7 +64,7 @@ shadowJar {
    minimize {
       exclude(dependency('commons-logging:.*:.*'))
    }
-   
+
    manifest {
 	attributes 'Main-Class': mainClassName
     }

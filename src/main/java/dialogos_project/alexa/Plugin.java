@@ -10,7 +10,7 @@ public class Plugin implements com.clt.dialogos.plugin.Plugin {
     @Override
     public void initialize() {
         Node.registerNodeTypes(getId(), Arrays.asList(new Class<?>[]{
-            AlexaInputNode.class, 
+            AlexaInputNode.class,
             AlexaOutputNode.class
         }));
     }
@@ -40,5 +40,5 @@ public class Plugin implements com.clt.dialogos.plugin.Plugin {
         return new AlexaPluginSettings();
     }
 
-    
+
 }
