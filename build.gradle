@@ -2,7 +2,6 @@ plugins {
   id 'java'
   id 'maven'
   id 'application'
-//id 'com.github.johnrengelman.shadow' version '4.0.3'
 }
 
 repositories {
@@ -21,12 +20,7 @@ dependencies {
     exclude module: 'com.clt.audio'
   }
   
-  compile 'com.amazon.alexa:ask-sdk:2.11.1'
-
-//  implementation 'com.amazon.alexa:ask-sdk-core:2.11.1'
-//  implementation 'com.amazon.alexa:ask-sdk-model:1.11.1'
-//  implementation 'com.amazon.alexa:ask-sdk-runtime:2.11.1'
-//  implementation 'com.amazon.alexa:ask-sdk-lambda-support:2.11.1'
+  implementation 'com.amazon.alexa:ask-sdk:2.11.1'
     
   runtime(group:'com.github.dialogos-project', name:'dialogos', version:'2.1.0') {
     exclude module: 'DialogOS_SphinxPlugin'
@@ -37,6 +31,7 @@ dependencies {
     exclude module: 'com.clt.audio'
   }
 }
+
 
 mainClassName = 'com.clt.dialogos.DialogOS'
 //mainClassName = 'dialogos_project.alexa.Plugin'
@@ -57,6 +52,4 @@ publishing {
         }
     }
 }
-
-
 
