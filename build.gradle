@@ -59,15 +59,3 @@ publishing {
 }
 
 
-
-shadowJar {
-   minimize {
-      exclude(dependency('commons-logging:.*:.*'))
-   }
-   
-   manifest {
-	attributes 'Main-Class': mainClassName
-    }
-}
-
-
